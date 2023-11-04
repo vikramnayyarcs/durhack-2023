@@ -1,25 +1,34 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
+type Artist = {
+  endTime?: string;
+  artistName: string;
+  trackName: string;
+  msPlayed: number;
+};
+
 type Inputs = {
-  file: any;
+  file: Blob;
   prompt: string;
 };
 
-export default function FormComponent() {
+interface FormComponentProps {
+  setShowResults: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function FormComponent({ setShowResults }: FormComponentProps) {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    // Access the file content here, assuming you have a state variable for it.
-    console.log("File content:", fileContent);
-    console.log(data);
+  const onSubmit: SubmitHandler<Inputs> = () => {
+    setShowResults(true);
   };
 
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [fileContent, setFileContent] = useState("");
+  const [, setSelectedFile] = useState<File | null>(null);
+  const [fileContent, setFileContent] = useState<string | null>("");
 
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
@@ -27,8 +36,11 @@ export default function FormComponent() {
 
     const reader = new FileReader();
     reader.onload = (event) => {
-      const content = event.target.result;
-      setFileContent(content);
+      const content = event.target?.result;
+
+      if (typeof content === "string") {
+        setFileContent(content);
+      }
     };
 
     reader.readAsText(file);
@@ -38,16 +50,16 @@ export default function FormComponent() {
 
   console.log(formattedJSONData);
 
-  const byArtistResults = [];
-
-  const byArtist = formattedJSONData
-    ?.filter((entry) => entry.artistName === "demxntia") //HARDCODED QUERY.
-    .map((artist: any) => ({
+  //Example Query Results:
+  const byArtistResults: Artist[] = [];
+  formattedJSONData
+    ?.filter((entry: Artist) => entry.artistName === "demxntia") //HARDCODED QUERY.
+    .map((artist: Artist) => ({
       artistName: artist.artistName,
       trackName: artist.trackName,
       msPlayed: artist.msPlayed,
     }))
-    .forEach((element) => {
+    .forEach((element: Artist) => {
       const filteredByTrackName = byArtistResults.filter(
         (result) => result.trackName === element.trackName
       );
