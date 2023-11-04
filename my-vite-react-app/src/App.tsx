@@ -1,15 +1,12 @@
-import './App.css'
-import Form from './components/Form'
+import "./App.css";
+import Input from "./components/Input";
 
 function App() {
-
   return (
-    <div className="h-screen w-screen">
-      <div className='flex items-center justify-center'>
-        <Form />
-      </div>
+    <div className="flex items-center justify-center h-screen">
+      <Input />
     </div>
   );
 }
 
-export default App
+export default App;
