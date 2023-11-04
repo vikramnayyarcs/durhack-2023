@@ -1,38 +1,36 @@
 import "./App.css";
-import Button from "./components/Button";
-import Input from "./components/Input";
-import {useState} from "react";
-import Results from "./components/Results";
+import { useState } from "react";
 
 function App() {
-  const [humanPrompt, setHumanPrompt] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [fileContent, setFileContent] = useState("");
 
-  const [showResults, setShowResults] = useState(false);
+  // Function to handle file input changes
+  const handleFileInputChange = (e) => {
+    const file = e.target.files[0]; // Get the first selected file
 
-  const handleSubmit = (e:any) => {
-    e.preventDefault();
+    // Set the selected file in state
+    setSelectedFile(file);
 
-    setShowResults(true);
+    // Read the contents of the selected file
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result;
+      setFileContent(content);
+    };
 
-    console.log(humanPrompt);
-  }
+    reader.readAsText(file);
+  };
+
+  console.log(fileContent);
 
   return (
     <div className="flex items-center justify-center h-screen">
       <div className="flex flex-col space-y-28">
         <div className="flex items-center">
-          <Input
-            value={humanPrompt}
-            f={(e: any) => setHumanPrompt(e.target.value)}
-          />
-          <Button onClick={handleSubmit} />
-        </div>
+          <input type="file" onChange={handleFileInputChange} />
 
-        {showResults && (
-          <div>
-            <Results />
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );
