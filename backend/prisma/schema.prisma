@@ -11,8 +11,9 @@ datasource db {
 }
 
 model Data {
-  id        Int    @id @default(autoincrement())
-  endTime   String
-  trackName String
-  msPlayed  String
+  id         Int    @id @default(autoincrement())
+  endTime    String
+  artistName String
+  trackName  String
+  msPlayed   String
 }
