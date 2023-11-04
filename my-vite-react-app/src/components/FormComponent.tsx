@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
-type Artist = {
+export type Artist = {
   endTime?: string;
   artistName: string;
   trackName: string;
@@ -47,29 +47,6 @@ export default function FormComponent({ setShowResults }: FormComponentProps) {
   };
 
   const formattedJSONData = fileContent ? JSON.parse(fileContent) : undefined;
-
-  console.log(formattedJSONData);
-
-  //Example Query Results:
-  const byArtistResults: Artist[] = [];
-  formattedJSONData
-    ?.filter((entry: Artist) => entry.artistName === "demxntia") //HARDCODED QUERY.
-    .map((artist: Artist) => ({
-      artistName: artist.artistName,
-      trackName: artist.trackName,
-      msPlayed: artist.msPlayed,
-    }))
-    .forEach((element: Artist) => {
-      const filteredByTrackName = byArtistResults.filter(
-        (result) => result.trackName === element.trackName
-      );
-
-      if (filteredByTrackName.length === 0) {
-        byArtistResults.push(element);
-      }
-    });
-
-  console.log(byArtistResults);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-1/2 mx-auto mt-8">
