@@ -7,7 +7,7 @@ const app = express();
 
 type Row = {
     id: number;
-    
+
 }
 
 
@@ -19,6 +19,7 @@ app.get('/api/search', async (req, res) => {
 });
 
 app.post('/api/search', async (req, res) => {
+    const row = await p
    res.json({message: "put query here"});
 });
 
