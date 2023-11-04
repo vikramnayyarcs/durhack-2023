@@ -34,6 +34,31 @@ export default function FormComponent() {
     reader.readAsText(file);
   };
 
+  const formattedJSONData = fileContent ? JSON.parse(fileContent) : undefined;
+
+  console.log(formattedJSONData);
+
+  const byArtistResults = [];
+
+  const byArtist = formattedJSONData
+    ?.filter((entry) => entry.artistName === "demxntia") //HARDCODED QUERY.
+    .map((artist: any) => ({
+      artistName: artist.artistName,
+      trackName: artist.trackName,
+      msPlayed: artist.msPlayed,
+    }))
+    .forEach((element) => {
+      const filteredByTrackName = byArtistResults.filter(
+        (result) => result.trackName === element.trackName
+      );
+
+      if (filteredByTrackName.length === 0) {
+        byArtistResults.push(element);
+      }
+    });
+
+  console.log(byArtistResults);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-1/2 mx-auto mt-8">
       <div className="mb-4">
