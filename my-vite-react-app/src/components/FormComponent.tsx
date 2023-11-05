@@ -17,6 +17,9 @@ interface FormComponentProps {
   setShowResults: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+
+
+
 export default function FormComponent({ setShowResults }: FormComponentProps) {
   const {
     register,
@@ -24,8 +27,73 @@ export default function FormComponent({ setShowResults }: FormComponentProps) {
     formState: { errors },
   } = useForm<Inputs>();
 
+  // let sqlQuery: string | null = null;
   const [, setSelectedFile] = useState<File | null>(null);
+  const [ prompt, setPrompt ] = useState("");
   const [fileContent, setFileContent] = useState<string | null>("");
+
+  const addData = async (insertSQL: string) => {
+    try{
+      const response =
+          await fetch('http://localhost:5001/api/insertData',{
+            method:'POST',
+            headers:{
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              insertSQL
+            })
+          })
+      console.log(response);
+    } catch (e){
+      console.log(e);
+    }
+
+  };
+
+  const getQuery = async (prompt: string) =>{
+    try{
+      const response =
+          await fetch('http://localhost:5001/api/seacrh',{
+            method:'GET',
+            headers:{
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              "searchPrompt": prompt
+            })
+          })
+      const sqlQuery = await response.json();
+      return sqlQuery as string;
+    } catch (e){
+      console.log(e);
+    }
+  };
+
+  const getData = async (query: any) => {
+
+      try{
+          const response =
+              await fetch('http://localhost:5001/api/seacrhDb',{
+                  method:'POST',
+                  headers:{
+                      "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify({
+                      query
+                  })
+              })
+          const data = await response.json();
+          console.log(data);
+          return data;
+      } catch (e){
+          console.log(e);
+      }
+
+
+  }
+
+
 
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
@@ -81,12 +149,22 @@ export default function FormComponent({ setShowResults }: FormComponentProps) {
       insertSQL += values;
     });
 
+    addData(insertSQL);
+
+
+
+    getData(getQuery(prompt));
+
+
+
 // Now, you have the complete SQL statement
     console.log(insertSQL);
 
 
     setShowResults(true);
   };
+
+// console.log(prompt)
 
 
   return (
@@ -112,8 +190,13 @@ export default function FormComponent({ setShowResults }: FormComponentProps) {
           </label>
           <input
               type="text"
+              value={prompt}
               id="prompt"
-              {...register("prompt")}
+              onChange={(e) => {
+                register("prompt")
+                setPrompt((e.target.value))
+              }}
+
               placeholder="Type here..."
               className="mt-1 p-2 border border-gray-300 rounded w-full"
           />

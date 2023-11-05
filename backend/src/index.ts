@@ -17,6 +17,7 @@ app.get('/api/search', async (req, res) => {
     const searchPrompt = req.body.searchPrompt as string;
     console.log(searchPrompt)
     const result = await apiCall(searchPrompt);
+    console.log(res.json(result));
     return res.json(result);
 });
 
