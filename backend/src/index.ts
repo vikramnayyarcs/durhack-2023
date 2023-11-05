@@ -3,41 +3,34 @@ import express from 'express';
 // @ts-ignore
 import cors from 'cors';
 import {PrismaClient} from "@prisma/client";
-import fetch = NodeJS.fetch;
-import {fetchGPTResponse} from "./gpt-api";
-
-
-
-
+import {apiCall} from "./api";
 
 
 const app = express();
-const prisma = new PrismaClient();
-
+const prisma:any  = new PrismaClient();
 
 app.use(express.json());
 app.use(cors());
 
 
 app.get('/api/search', async (req, res) => {
-
-
-    const searchTerm = req.query.searchTerm as string;
-    const result = await fetchGPTResponse(searchTerm);
+    const searchPrompt = req.body.searchPrompt as string;
+    console.log(searchPrompt)
+    const result = await apiCall(searchPrompt);
     return res.json(result);
 });
 
 app.post('/api/searchDb', async  (req, res) =>{
     const query = req.body;
     const customQueryResult = await prisma.$queryRaw`${query}`;
-
-})
+    res.send("okay");
+    return customQueryResult;
+});
 
 app.post('/api/insertData', async (req, res) => {
-   const {endTime, artistName, trackName, msPlayed} = req.body;
-
-   // data:{endTime, artistName, trackName, msPlayed}
-   res.json({message: "put query here"});
+    const query = req.body;
+    const customQueryResult = await prisma.$queryRaw`${query}`;
+    res.send("okay");
 });
 
 
